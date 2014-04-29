@@ -1,3 +1,13 @@
 name: Hamidreza Soleimani's Blog
+description: Just about what I know
+meta_description: "Hamidreza Soleimani's Blog - Just about what I know"
+
 markdown: redcarpet
 pygments: true
+logo: false
+paginate: 15
+
+# Details for the RSS feed generator
+url: 'http://hamidreza-s.github.io'
+author: 'Hamidreza Soleimani'
+author_description: 'I am a human, instrumentalist and a software developer, trying to figure out how to live.'
