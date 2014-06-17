@@ -35,12 +35,12 @@ As mentioned before, Mnesia needs some _Locking Mechanisms_ to achieve Atomicity
 - **Sticky lock**: This is an efficient locking mechanism when we have multiple instances of Mnesia in different nodes. Sticky locks are same as write locks, but they stay on the node that initiated it, instead of spreading across all the nodes.
 
 ## Mnesia Table Types
-In this part of post, I will explain all _types_ of Mnesia tables, Their _data structure_ and _time complexity_ as well as some sample codes.
+In this part of post, I will explain all _Types_ of Mnesia tables, Their _Data Structure_ and _Time Complexity_ as well as some sample codes.
 
 ### Set and Bag
 **Set** type requires that all the keys in the table are unique. So you can't have two records with the same key, but in **Bag** type we can have several records with a same key.
 
-The data structure of these types are based on [Hash Table](--link--) algorithm. According to Time Complexity of Hash Tables in [Big O Notation](--link--) symbolism, we can infer following table of information from it:
+The data structure of these types are based on [Hash Table](--link--) algorithm. According to time complexity of Hash Tables in [Big O Notation](--link--) symbolism, we can infer following table of information from it:
 
 | Operation | Average | Worst Case |
 |:---------:|:-------:|:----------:|
@@ -52,7 +52,7 @@ The data structure of these types are based on [Hash Table](--link--) algorithm.
 As you see, in average we have a slight _space penalty_ in sets, but for _search_, _insert_ and _delete_ operations it doesn't matter how large table rows could be, and they take place in _constant time_.
 
 ### Ordered Set
-The **Ordered Set** type is equal to **Set** just it sorts records by their keys. The data structure of it are based on [Balanced Binary Tree](--link--) and Time Complexity of it is as follows:
+The **Ordered Set** type is equal to **Set** just it sorts records by their keys. The data structure of it are based on [Balanced Binary Tree](--link--) and time complexity of it is as follows:
 
 | Operation | Average  | Worst Case |
 |:---------:|:--------:|:----------:|
@@ -61,7 +61,7 @@ The **Ordered Set** type is equal to **Set** just it sorts records by their keys
 | Insert    | O(log n) | O(n)       |
 | Delete    | O(log n) | O(n)       |
 
-The logarithmic time of _search_, _insert_ and _delete_ means, if we have `n` items in a table, these operations in average takes place in `log n` runnig time. So it has time penalty as opposed to **Set** table type.
+The logarithmic time of _search_, _insert_ and _delete_ means, if we have `n` items in a table, these operations in average take place in `log n` runnig time. So it has a slight time penalty as opposed to **Set** table type.
 
 ### Code Samples
 The following sample codes are as simple as possible just for getting the sense of it.
@@ -116,5 +116,6 @@ read(Id) ->
 
 I tried to write self-explanatory codes in order to bypass that boaring line by line explaining.
 
-## Simple Scenarios
-{according to joe's book}
+## Conclusion
+
+{ conclusion }
