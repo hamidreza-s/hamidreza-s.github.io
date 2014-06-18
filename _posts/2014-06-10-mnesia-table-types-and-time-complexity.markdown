@@ -118,6 +118,6 @@ I tried to write self-explanatory codes in order to bypass that boaring line by 
 
 ## Conclusion
 
-Mnesia is a low-level and therefore an efficient way to managing data in Erlang stack. In addition to the aforementioned features, it has _Table Fragmentation_, _Load Balancing_, _Data Event Handling_ and great online _GUI Monitoring_ features. Suprisingly, they are all free.
+Mnesia is a low-level and therefore an efficient way to managing data in Erlang stack. In addition to the aforementioned features, it offers _Table Fragmentation_, _Load Balancing_, _Data Event Handling_ and great online _GUI Monitoring_ features. Suprisingly, they are all free.
 
-As a rule of thumb, every developer should note that, the better database schema and table type you choose for your application's scenario, the more efficient result you would get from it.
+As a rule of thumb, we developers should note that, the better database schema and table type we choose for our application's scenario, the more efficient result we would get from it.
