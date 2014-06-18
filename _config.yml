@@ -1,6 +1,9 @@
 name: Hamidreza Soleimani's Blog
 description: Just about what I know
 meta_description: "Hamidreza Soleimani's Blog - Just about what I know"
+markdown: redcarpet
+redcarpet:
+ extensions: ["no_intra_emphasis", "fenced_code_blocks", "autolink", "tables", "with_toc_data"]
 
 markdown: redcarpet
 pygments: true

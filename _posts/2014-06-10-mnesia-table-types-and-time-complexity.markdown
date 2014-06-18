@@ -2,26 +2,26 @@
 layout: post
 title: "Mnesia Table Types and Time Complexity"
 date: 2014-06-10 17:16:00
-categories: erlang mnesia time-complixity
+categories: erlang mnesia table-type time-complexity
 ---
 
-In this post, I want to introduce [Mnesia](--link--) [Data Base Management System (DBMS)](--link--), its **Lock Mechanism**, **Time Complexity** and **Table Types**. In the last part of this post, I will write a simple code snippet for it.
+Today I want to introduce [Mnesia](https://en.wikipedia.org/wiki/Mnesia) Data Base Management System (DBMS), its **Lock Mechanism**, **Time Complexity** and **Table Types**. In the last part of this post, I will write a simple code snippet for it.
 
 ## What is Mnesia
-Mnesia is an **Embedded**, **Key/Value**, **Distributed** and **Transactional** database which is bundled with [Erlang/OTP](--link--) platform for use in [Soft Real-time](--link--) applications.
+Mnesia is an **Embedded**, **Key/Value**, **Distributed** and **Transactional** database which is bundled with [Erlang/OTP](https://en.wikipedia.org/wiki/Erlang_(programming_language\)) platform for use in [Soft Real-time](https://en.wikipedia.org/wiki/Real-time_computing) applications.
 
 It is Embedded in Erlang and you don't need to install it separately. With an Erlang/OTP installed in your machine, you have already had an installed instance of Mnesia.
 
-It is Key/Value, so for storing data in Mnesia all you need is a key and its value. This approach, like other [NoSql](--link--) databases, provides simplicity of design, horizontal scaling and finer control over availability.
+It is Key/Value, so for storing data in Mnesia all you need is a key and its value. This approach, like other [NoSql](https://en.wikipedia.org/wiki/NoSQL) databases, provides simplicity of design, horizontal scaling and finer control over availability.
 
 It is Distributed and you can run multiple instances of Mnesia in multiple network's nodes and these instances can communicate and coordinate their actions by passing messages. In this way, your distributed system can benefit from concurrency of components, lack of global clock and no single point of failure.
 
-It is Transactional and implements the [ACID](--link--) properties. So Mnesia guarantees that your database transactions run Atomic, Consistent, Isolated and Durable.
+It is Transactional and implements the [ACID](https://en.wikipedia.org/wiki/ACID) properties. So Mnesia guarantees that your database transactions run Atomic, Consistent, Isolated and Durable.
 
-One of the Mnesia's features that has not been talked about very much, is its ability to store Erlang's terms without any transforming or serializing. If you come from an Object-Oriented world and its [Object-Relational Mapping](--link--) systems, you might hear about [Object-Relational Impedance Mismatch](--link--) difficulties. One of the main difficulties caused by it is the data structure differences between your language objects and your database types. However in Mnesia you can store Erlang's terms intact, solving that Impedance Mismatch between language and database.
+One of the Mnesia's features that has not been talked about very much, is its ability to store Erlang's terms without any transforming or serializing. If you come from an Object-Oriented world and its [Object-Relational Mapping](https://en.wikipedia.org/wiki/Object-relational_mapping) systems, you might hear about [Object-Relational Impedance Mismatch](https://en.wikipedia.org/wiki/Object-relational_impedance_mismatch) difficulties. One of the main difficulties caused by it is the data structure differences between your language objects and your database types. However in Mnesia you can store Erlang's terms intact, solving that Impedance Mismatch between language and database.
 
 ### Amdahl's Law
-Since Mnesia is embedded in Erlang, and in Erlang we can simply spawn thousands of concurrent processes to achieve speedup of program, it is possible to make a mistake to run concurrent transactions for speedup and reducing the time of our program. But in these situations we don't have to forget the [Amdahl's Law](--link--). It says "The speedup of a concurrent program using multiple processors is limited by the time needed for the sequential fraction of the program".
+Since Mnesia is embedded in Erlang, and in Erlang we can simply spawn thousands of concurrent processes to achieve speedup of program, it is possible to make a mistake to run concurrent transactions for speedup and reducing the time of our program. But in these situations we don't have to forget the [Amdahl's Law](https://en.wikipedia.org/wiki/Amdahl's_law). It says "The speedup of a concurrent program using multiple processors is limited by the time needed for the sequential fraction of the program".
  
 With this law in hand, we know that running multiple transactions concurrently but in a same row, can't reduce the running time of the program. The **Atomicity**, **consistency** and **Isolation** properties of Mnesia's transactions would order its _Transaction Manager_ to lock the given row when each transaction wants to access it. So not only the concurrent running of these transactions can't reduce the running time of the program, but also it undertakes extra actions like row-locking, table-locking, process context-switching and synchronization which may eventually run sequentially.
 
@@ -40,7 +40,7 @@ In this part of post, I will explain all _Types_ of Mnesia tables, Their _Data S
 ### Set and Bag
 **Set** type requires that all the keys in the table are unique. So you can't have two records with the same key, but in **Bag** type we can have several records with a same key.
 
-The data structure of these types are based on [Hash Table](--link--) algorithm. According to time complexity of Hash Tables in [Big O Notation](--link--) symbolism, we can infer following table of information from it:
+The data structure of these types are based on [Hash Table](https://en.wikipedia.org/wiki/Hash_table) algorithm. According to time complexity of Hash Tables in [Big O Notation](https://en.wikipedia.org/wiki/Big_O_notation) symbolism, we can infer following table of information from it:
 
 | Operation | Average | Worst Case |
 |:---------:|:-------:|:----------:|
@@ -52,7 +52,7 @@ The data structure of these types are based on [Hash Table](--link--) algorithm.
 As you see, in average we have a slight _space penalty_ in sets, but for _search_, _insert_ and _delete_ operations it doesn't matter how large table rows could be, and they take place in _constant time_.
 
 ### Ordered Set
-The **Ordered Set** type is equal to **Set** just it sorts records by their keys. The data structure of it are based on [Balanced Binary Tree](--link--) and time complexity of it is as follows:
+The **Ordered Set** type is equal to **Set** just it sorts records by their keys. The data structure of it are based on [Balanced Binary Tree](https://en.wikipedia.org/wiki/Self-balancing_binary_search_tree) and time complexity of it is as follows:
 
 | Operation | Average  | Worst Case |
 |:---------:|:--------:|:----------:|
@@ -61,7 +61,7 @@ The **Ordered Set** type is equal to **Set** just it sorts records by their keys
 | Insert    | O(log n) | O(n)       |
 | Delete    | O(log n) | O(n)       |
 
-The logarithmic time of _search_, _insert_ and _delete_ means, if we have `n` items in a table, these operations in average take place in `log n` runnig time. So it has a slight time penalty as opposed to **Set** table type.
+The logarithmic time of _search_, _insert_ and _delete_ means, if we have `n` items in a table, these operations in average take place in `log n` running time. So it has a slight time penalty as opposed to **Set** table type.
 
 ### Code Samples
 The following sample codes are as simple as possible just for getting the sense of it.
@@ -118,6 +118,6 @@ I tried to write self-explanatory codes in order to bypass that boaring line by 
 
 ## Conclusion
 
-Mnesia is a low-level and therefore an efficient way to managing data in Erlang stack. In addition to the aforementioned features, it offers _Table Fragmentation_, _Load Balancing_, _Data Event Handling_ and great online _GUI Monitoring_ features. Suprisingly, they are all free.
+Mnesia is a low-level and therefore an efficient way to managing data in Erlang stack. In addition to the aforementioned features, it offers _Table Fragmentation_, _Load Balancing_, _Data Event Handling_ and great online _GUI Monitoring_ features. Surprisingly, they are all free.
 
-As a rule of thumb, we developers should note that, the better database schema and table type we choose for our application's scenario, the more efficient result we would get from it.
+As a conclusion, we developers should note that, the better database schema and table type we choose for our application's scenario, the more efficient results we would get from it.
