@@ -5,7 +5,7 @@ date: 2014-09-11 12:30:00
 categories: erlang restful webservice webmachine
 ---
 
-intro ...
+Today I want to talk about RESTful Web Services and how to create one with Webmachie, which is a REST toolkit, written in Erlang programming language. The reason which attracted me to write this post was the new approaches that I've found in Webmachine both syntatically and semantically. To be succinct, let's get our hands dirty with it. 
 
 ## What is REST
 rest is ...
