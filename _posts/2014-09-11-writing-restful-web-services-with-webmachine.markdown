@@ -27,7 +27,17 @@ Some of its key properties are as follows:
 
 
 ### Architectural Constraints
-architectual constraints are ...
+The architectural properties of REST can be acheived by applying some constraints when designin a RESTful system. I mention some of key constraints of it:
+
+- __Client-Server__: The components must be seperated to clients and servers, to achieve the seperation of concerns, thereby supporting the independent development of client-side logic and server-side logic.
+
+- __Stateless__: The clients and servers must talk to each other through a stateless communication, meaning no client context being stored in the server. So the session state is held in the client and is sent with every request.
+
+- __Cacheable__: The clients must be able to cache the server responses in order to prevent reusing stale or inappropirate data. In this way we can improve the overal system performance by eliminating not nessecary intractions.
+
+- __Layerd System__: In a layerd system, no one layer can see past the next. They can be added, removed or modified transparently as a middleware, and each layer cannot ordinarily tell wheter it is connected directly to an end server or a middleware.
+
+- __Uniform Interface__: Each component must share a uniform interface, free of business context, in order to be reusable by a wide range of other components. So it must be standard, generic, high-level and abstract enough like HTTP methods, URL syntax and MIME types.
 
 ## What is Webmachine
 webmachine is ...
