@@ -23,7 +23,7 @@ Some of its key properties are as follows:
 
 - __Visibility__: Making the API visible to such an extent that the connectors and middlewares can involve and understand the content of interaction for monitoring and regulating it.
 
-- __Portability__, Designing you system in a way that you can move your components from one deployed location to another without any trouble in building and running it.
+- __Portability__: Designing you system in a way that you can move your components from one deployed location to another without any trouble in building and running it.
 
 ### Architectural Constraints
 The architectural properties of REST can be achieved by applying some constraints when designing a RESTful system. I'll mention some of key constraints of it:
@@ -48,16 +48,13 @@ To be compliant with REST architectural constraints, especially the Uniform Inte
 
 ```bash
 $ telnet example.com 80
-> 
 > GET weather/country HTTP/1.1
 > Accept: application/json
 >
-<
 < HTTP/1.1 200 OK
 < Vary: Accept
 < Server: MochiWeb/1.1 WebMachine/1.10
-< Content-type: application/json
-< 
+< Content-type: application/json 
 ```
 
 Now let's create a web service to serve such a response. Use [this](https://github.com/basho/webmachine/wiki/Quickstart) quickstart for creating the base Webmachine skeleton.
@@ -84,54 +81,38 @@ We've just add a dispatch route and a dispatcher module with the name of weather
 %%%%%%%%%%%%%%%%%%%%%%%%
 
 init(_Args) ->
-
 	%% initialize state
 	State = [],
-	
 	{ok, State}.
 
 
 allowed_methods(Request, State) ->
-
 	%% set allowed request methods
 	AllowedMethods = ['GET', 'POST'],
-
 	{AllowedMethods, Request, State}.
 
-
 generate_etag(Request, State) ->
-	
 	{ok, Etag} = get_weather_by_country_etag(),
-	
 	{Etag, Request, State}.
 
-
 content_types_provided(Request, State) ->
-
 	%% map requested content types with its functions
 	ContentTypes = [
 		{"application/json", to_json},
 		{"text/yaml", to_yaml}
 	],
-
 	{ContetTypes, Request, State}.
-
 	
 to_json(Request, State) ->
-
 	%% get list and format it to JSON
 	{ok, List} = get_weather_by_country(),
 	Response = my_formatter:list_to_json(List),
-	
 	{Response, Request, State}.
 
-
 to_yaml(RequestData, State) ->
-
 	%% get list and format it to YAML
 	{ok, List} = get_weather_by_country(),
 	Response = my_formatter:list_to_yaml(List),
-	
 	{Response, Request, State}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
@@ -139,22 +120,18 @@ to_yaml(RequestData, State) ->
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
 get_weather_by_country() ->
-	
 	%% fetch raw data from database
 	Result = my_data:weather_by_country(),
-	
 	{ok, Result}.
 	
 get_etag() ->
-
 	%% get entity tag of data
 	Etag = my_data:weather_by_country_etag(),
-	
 	{ok, Etag}.
 ```
 
 Notice how it uses [Etag](https://en.wikipedia.org/wiki/HTTP_ETag) for response caching or content types for resource mapping.
-I used this simple module to show you how it works in the simplest form. However you can create enterprise web services, which is compliant with REST constraints, with it in a same way. Also you can find a detailed tutorial in [Webmachine's GitHub repo](https://github.com/basho/webmachine/wiki/Demo).
+I used this simple module to show you how it works in the simplest form. However you can create enterprise web services with it, which are compliant with REST constraints, in a same way. Also you can find a detailed tutorial in [Webmachine's GitHub repo](https://github.com/basho/webmachine/wiki/Demo).
 
 ### Webmachine is functional
 As you've just seen, Webmachine is written in Erlang, a functional programming language. Now the question; what benefit does it have for us?
@@ -163,9 +140,9 @@ One of the key principles of functionl programming languages is [Referential Tra
 Let's list some main benefits of it:
 
 - Simple Testing: There is no need to mock and fake objects for database connections and such things.
-- Simple Debugging: Each function has its own responsibility and therfore is simpler to reason, understand and debug.
+- Simple Debugging: Each function has its own responsibility and therefore is simpler to reason, understand and debug.
 - Low Cost: The lack of extra layers of Object Oriented structures helps it to be cheaper.
 - Robust Platform: It's worth to say that Erlang itself has many benfits for you like concurrency and fault-tolerancy that need extra articles.
 
 ## Conclusion
-Although REST is not totally perfect and has its own drawbacks, its advantages bring us performance, scalibility, simplicity, and some other good thins. Implementing a RESTful web service with most of the common web frameworks completely depends on the developer, but in Webmachine it is a must. No matter what data elements you have, you must be compliant with REST standards when you are implementing it.
+Although REST is not totally perfect and has its own drawbacks, its advantages bring us performance, scalibility, simplicity, and some other good things. Implementing a RESTful web service with most of the common web frameworks completely depends on the developer, but in Webmachine it is a must. No matter what data elements you have, you must be compliant with REST standards when you are implementing it.
