@@ -1,11 +1,11 @@
 ---
 layout: post
 title: "Writing RESTful Web Services with Webmachine"
-date: 2014-09-11 12:30:00
+date: 2014-11-26 17:30:00
 categories: erlang restful webservice webmachine
 ---
 
-Today I want to talk about [RESTful](https://en.wikipedia.org/wiki/Representational_state_transfer) Web Services and how to create one with [Webmachie](https://github.com/basho/webmachine), which is a REST toolkit, written in [Erlang](https://en.wikipedia.org/wiki/Erlang_(programming_language)) programming language. The reason which attracted me to write this post was the unique approaches that I've found in the Webmachine both syntactically and semantically. To be succinct, let's get our hands dirty with it. 
+Today I want to talk about [RESTful](https://en.wikipedia.org/wiki/Representational_state_transfer) Web Services and how to create one with [Webmachie](https://github.com/basho/webmachine), which is a REST toolkit, written in [Erlang](https://en.wikipedia.org/wiki/Erlang_(programming_language)) programming language. The reason that propelled me to write this post was the set of unique approaches that I've found in the Webmachine both syntactically and semantically. To be succinct, let's get our hands dirty with it. 
 
 ## What is REST
 What is all the fuss about the REST? It is an acronym of REpresentational State Transfer and can be defined as an architectural style that can be applied to all the entities on the web including __components__, __connectors__ and __data elements__. Simply put, a component can be a web client with a graphical interface for providing data elements from a remote component which can be a web application. These components communicate through their connectors. Therefore the connector can monitor, facilitate, balance the load or make other controlling actions.
@@ -34,7 +34,7 @@ The architectural properties of REST can be achieved by applying some constraint
 
 - __Cacheable__: The clients must be able to cache the server responses in order to prevent reusing stale or inappropriate data. In this way we can improve the overal system performance by eliminating not nessecary intractions.
 
-- __Layerd System__: In a layered system, no one layer can see past the next. They can be added, removed or modified transparently as a middleware, and each layer cannot ordinarily tell wheter it is connected directly to an end server or a middleware.
+- __Layerd System__: In a layered system, no one layer can see past the next. They can be added, removed or modified transparently as a middleware, and each layer cannot ordinarily tell whether it is connected directly to an end server or a middleware.
 
 - __Uniform Interface__: Each component must share a uniform interface, free of business context, in order to be reusable by a wide range of other components. So it must be standard, generic, high-level and abstract enough like HTTP methods, URL syntax and MIME types.
 
@@ -135,14 +135,13 @@ I used this simple module to show you how it works in the simplest form. However
 
 ### Webmachine is functional
 As you've just seen, Webmachine is written in Erlang, a functional programming language. Now the question; what benefit does it have for us?
-One of the key principles of functionl programming languages is [Referential Transparency](https://en.wikipedia.org/wiki/Referential_transparency_(computer_science\)) for its functions. It says that every referential transparent function returns the same result for a same input at any point in time. So there is no [Global Variables](https://en.wikipedia.org/wiki/Global_variable) or [Mutator Methods](https://en.wikipedia.org/wiki/Mutator_method) that can change the output of a same input in subsequent function calls, so testing and debugging it becomes simpler. 
+One of the key principles of functionl programming languages is [Referential Transparency](https://en.wikipedia.org/wiki/Referential_transparency_(computer_science)) for its functions. It says that every referential transparent function returns the same result for a same input at any point in time. So there is no [Global Variables](https://en.wikipedia.org/wiki/Global_variable) or [Mutator Methods](https://en.wikipedia.org/wiki/Mutator_method) that can change the output of a same input in subsequent function calls, so testing and debugging it becomes simpler. 
 
 Let's list some main benefits of it:
 
 - Simple Testing: There is no need to mock and fake objects for database connections and such things.
 - Simple Debugging: Each function has its own responsibility and therefore is simpler to reason, understand and debug.
-- Low Cost: The lack of extra layers of Object Oriented structures helps it to be cheaper.
 - Robust Platform: It's worth to say that Erlang itself has many benfits for you like concurrency and fault-tolerancy that need extra articles.
 
 ## Conclusion
-Although REST is not totally perfect and has its own drawbacks, its advantages bring us performance, scalibility, simplicity, and some other good things. Implementing a RESTful web service with most of the common web frameworks completely depends on the developer, but in Webmachine it is a must. No matter what data elements you have, you must be compliant with REST standards when you are implementing it.
+Although REST is not totally perfect and has its own drawbacks, its advantages bring us performance, scalibility, simplicity, and some other good things. Implementing a RESTful web service with most of the common web frameworks, completely depends on the developer, but in Webmachine it is a must. No matter what data elements you have, you must be compliant with REST standards when you are implementing it.
