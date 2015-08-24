@@ -5,7 +5,7 @@ date: 2014-06-10 17:16:00
 categories: erlang mnesia table-type time-complexity
 ---
 
-Today I want to introduce [Mnesia](https://en.wikipedia.org/wiki/Mnesia) Data Base Management System (DBMS), its **Lock Mechanism**, **Time Complexity** and **Table Types**. In the last part of this post, I will write a simple code snippet for it.
+This post is about [Mnesia](https://en.wikipedia.org/wiki/Mnesia) Data Base Management System (DBMS), its **Lock Mechanism**, **Time Complexity** and **Table Types**. In the last part of this post, I will write a simple code snippet for it.
 
 ## What is Mnesia
 Mnesia is an **Embedded**, **Key/Value**, **Distributed** and **Transactional** database which is bundled with [Erlang/OTP](https://en.wikipedia.org/wiki/Erlang_(programming_language)) platform for use in [Soft Real-time](https://en.wikipedia.org/wiki/Real-time_computing) applications.
