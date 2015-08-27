@@ -11,6 +11,7 @@ logo: false
 paginate: 15
 
 # Details for the RSS feed generator
-url: 'http://hamidreza-s.github.io'
+bare_url: 'hamidreza-s.github.io'
+url: 'https://hamidreza-s.github.io'
 author: 'Hamidreza Soleimani'
 author_description: 'I am a human, instrumentalist and a software developer, trying to figure out how to live.'

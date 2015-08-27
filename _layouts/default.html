@@ -1,9 +1,18 @@
 <!DOCTYPE html>
 <html>
-<head>   
+<head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
+    <script>
+        var host = "{{ site.bare_url }}";
+        if(window.location.host == host && window.location.protocol != "https:") {
+            window.location.protocol = "https:";
+            console.log(host);
+        }
+    </script>
+
+    
     <title>
       {% if page.url == "/" %}
          {{ site.name }} - {{ site.description }}
@@ -24,7 +33,7 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/syntax.css">
     <!-- Customisation  -->
     <link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
-
+    
 </head>
 <body class="home-template">
 
@@ -39,7 +48,6 @@
         </div>
     </footer>
 
-    
     <script type="text/javascript" src="/assets/js/jquery-1.10.2.min.js"></script>
     <script type="text/javascript" src="/assets/js/jquery.fitvids.js"></script>
     <script type="text/javascript" src="/assets/js/index.js"></script>
