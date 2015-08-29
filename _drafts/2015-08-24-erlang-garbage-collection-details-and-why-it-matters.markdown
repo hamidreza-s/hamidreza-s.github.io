@@ -49,7 +49,7 @@ Before digging into GC, it is essential to inspect the memory layout of an Erlan
 +----------------------------------+      +----------------------------------+              
 ```
 
-* **PCB**: Process Control Block holds some information about the process such as its identifier (PID) in Process Table, current status (running, waiting), its registered name, the initial and current call. Also PCB holds some pointers to incoming messages which is a *Linked List* and is stored by value in heap.
+* **PCB**: Process Control Block holds some information about the process such as its identifier (PID) in Process Table, current status (running, waiting), its registered name, the initial and current call, and also PCB holds some pointers to incoming messages which are members of a *Linked List* that is stored in heap.
 
 * **Stack**: It is a downward growing memory area which holds incoming and outgoing parameters, return addresses, local variables and temporary spaces for evaluating expressions.
 
@@ -61,7 +61,8 @@ In order to explain current default Erlang's GC mechanism concisely we can say; 
 
 ### Private Heap GC
 
-The GC for private heap is generational. Based on the fact that if an object survives a GC cycle the chances of it becoming garbage in short term is low, generational GC divides the heap into two segments: young and old generations. The young generation is for newly allocated data, and old generation is for the data that have survived an implementation specific number of GC. Also in context of Erlang garbage collection there are two strategies; *Generational* (Minor) and *Fullsweep* (Major). The generational GC just collects the young heap, but fullsweep collect both young and old heap. Now lets review the GC steps in private heap of a newly started Erlang process:
+The GC for private heap is generational. Generational GC divides the heap into two segments: young and old generations. This separation is based on the fact that if an object survives a GC cycle the chances of it becoming garbage in short term is low. So the young generation is for newly allocated data, and old generation is for the data that have survived an implementation specific number of GC. This separation helps the GC to reduce its unnecessary cycles over the data which have not become garbage yet.
+In context of Erlang garbage collection there are two strategies; *Generational* (Minor) and *Fullsweep* (Major). The generational GC just collects the young heap, but fullsweep collect both young and old heap. Now lets review the GC steps in private heap of a newly started Erlang process:
 
 
 **Scenario 1**:
@@ -74,7 +75,7 @@ No GC occurs in a short-lived process which doesn't use heap more that *min_heap
 ```
 Spawn > Fullsweep > Generational > Terminate
 ```
-A newly spawned process uses fullsweep GC, obviously because no GC has occurred yet and so there is no separation between objects as young and old generations. After that first fullsweep GC, the heap is separated into young and old segments and afterward the GC strategy switches to generational and remains on it until the process terminates.
+A newly spawned process whose data grows more that *min_heap_size* uses fullsweep GC, obviously because no GC has occurred yet and so there is no separation between objects as young and old generations. After that first fullsweep GC, the heap is separated into young and old segments and afterward the GC strategy switches to generational and remains on it until the process terminates.
 
 **Scenario 3**:
 ```
@@ -86,7 +87,7 @@ There are cases in a process lifetime when GC strategy switches from generationa
 ```
 Spawn > Fullsweep > Generational > Fullsweep > Increase Heap > Fullsweep > ... > Terminate
 ```
-In scenario 3 if the second fullsweep GC cannot collect enough memory, then the heap size is increased and the GC strategy switches to fullsweep again, like a newly spawned process, and the all these four scenarios can be occurs for it.
+In scenario 3 if the second fullsweep GC cannot collect enough memory, then the heap size is increased and the GC strategy switches to fullsweep again, like a newly spawned process, and all these four scenarios can be occurred agian and again.
 
 Now the question is why it matters in an automatic garbage collected language like Erlang.
 Firstly this knowledge can help you to make your system go faster by tuning the GC occurrence and strategy globally or per process. Secondly this is where we can understand one of the main reasons that makes Erlang a soft realtime platform from its garbage collection point of view. This is because each process has its own private heap and its own GC, so each time GC occurs inside a process it just stops the Erlang process which is being collected, but doesn't stop other processes, and this is what a soft realtime system needs.
@@ -95,9 +96,9 @@ Firstly this knowledge can help you to make your system go faster by tuning the 
 
 The GC for shared heap is reference counting. Each object in shared heap (Refc) has a counter of references to it held by other objects (ProcBin) which are stored inside private heap of Erlang processes. If an object's reference counter reaches zero, the object has become inaccessible and will be destroyed. Reference counting GC is so cheap and helps the system to avoid unexpected long time pauses and boosts the system responsiveness. But being unaware of some well-known anti-patterns in designing your actor model system could make troubles in case of memory leak.
 
-* First when a Refc is splitted into a *Sub-Binary*. In order to be cheap; a sub-binary is not a new copy of splitted part of original binary, but just a reference into that part. However this sub-binary counts as a new reference in addition the the original binary, and you know, it can cause problem when the original binary must hang around for its sub-binary to be collected.
+* First when a Refc is splitted into a *Sub-Binary*. In order to be cheap; a sub-binary is not a new copy of splitted part of original binary, but just a reference into that part. However this sub-binary counts as a new reference in addition to the original binary, and you know, it can cause problem when the original binary must hang around for its sub-binary to be collected.
 
-* The other known problem is when there is a sort of long-lived middleware process acting as a request controller or message router for controlling and transferring large Refc binary messages. As this process touches each Refc message, the counter of them increments. So collecting those Refc messages depends on collecting all ProcBin objects even ones that are inside the middleware process. Unfortunately because ProcBins are just a pointer hence they are so cheap and could take so long to happen a GC inside the middleware process. As a result the Refc messages remain on shared heap even if they have been collected from all other processes except the middleware.
+* The other known problem is when there is a sort of long-lived middleware process acting as a request controller or message router for controlling and transferring large Refc binary messages. As this process touches each Refc message, the counter of them increments. So collecting those Refc messages depends on collecting all ProcBin objects even ones that are inside the middleware process. Unfortunately because ProcBins are just a pointer hence they are so cheap and it could take so long to happen a GC inside the middleware process. As a result the Refc messages remain on shared heap even if they have been collected from all other processes, except the middleware.
 
 Shared heap matters because it reduces the IO of passing large messages between processes. Also creating sub-binaries are so fast because they are just pointers to another binary. But as a rule of thumb using shortcuts for being faster has cost, and its cost is well architecting your system in a way that doesn't become trapped in bad conditions. Also there are some well-known architectural patterns for Refc binary leak issues which [Fred Hebert](http://ferd.ca/) explains them in his free ebook; [Erlang in Anger](http://www.erlang-in-anger.com/), and I think that I cannot explain it better than him. So I strongly recommend you to read it.
 
