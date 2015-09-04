@@ -5,7 +5,7 @@ date: 2015-08-24 20:15:00
 category: erlang garbage collection memory layout soft realtime
 ---
 
-One of the main problems that Erlang tried to solve was creating a platform for implementing [Soft Realtime](https://en.wikipedia.org/wiki/Real-time_computing) systems with a high level of responsiveness. Such systems require a fast [Garbage Collection](https://en.wikipedia.org/wiki/Garbage_collection_%28computer_science%29) mechanism that doesn't stop the system from responsing in a timely manner. In other hand Garbage Collection gets more importance when we consider Erlang as an [Immutable](https://en.wikipedia.org/wiki/Immutable_object) language with *Non-destructive Update* property, because there is a high rate of producing garbage in such languages.
+One of the main problems that Erlang tried to solve was creating a platform for implementing [Soft Realtime](https://en.wikipedia.org/wiki/Real-time_computing) systems with a high level of responsiveness. Such systems require a fast [Garbage Collection](https://en.wikipedia.org/wiki/Garbage_collection_%28computer_science%29) mechanism that doesn't stop the system from responding in a timely manner. In other hand Garbage Collection gets more importance when we consider Erlang as an [Immutable](https://en.wikipedia.org/wiki/Immutable_object) language with *Non-destructive Update* property, because there is a high rate of producing garbage in such languages.
 
 
 
@@ -66,28 +66,32 @@ In context of Erlang garbage collection there are two strategies; *Generational*
 
 
 **Scenario 1**:
+
 ```
 Spawn > No GC > Terminate
 ```
 No GC occurs in a short-lived process which doesn't use heap more that *min_heap_size* and then terminates. This way the whole memory used by process is collected.
 
 **Scenario 2**:
+
 ```
 Spawn > Fullsweep > Generational > Terminate
 ```
 A newly spawned process whose data grows more that *min_heap_size* uses fullsweep GC, obviously because no GC has occurred yet and so there is no separation between objects as young and old generations. After that first fullsweep GC, the heap is separated into young and old segments and afterward the GC strategy switches to generational and remains on it until the process terminates.
 
 **Scenario 3**:
+
 ```
 Spawn > Fullsweep > Generational > Fullsweep > Generational > ... > Terminate
 ```
 There are cases in a process lifetime when GC strategy switches from generational back to fullsweep again. First case is after certain number of generational GC occurs. This certain number can be specified globally or per process with *fullsweep_after* flag. Also the counter of generational GC per process and its upper bound before fullsweep GC are *minor_gcs* and *fullsweep_after* properties respectively, and can be seen in return value of *process_info(PID, garbage_collection)*. Second case is when the generation GC cannot collect enough memory and the last case is when the *garbage_collect(PID)* function is called manually. After these cases the GC strategy reverts again from fullsweep to generational and remains on it until aforementioned cases occurs.
 
 **Scenario 4**:
+
 ```
 Spawn > Fullsweep > Generational > Fullsweep > Increase Heap > Fullsweep > ... > Terminate
 ```
-In scenario 3 if the second fullsweep GC cannot collect enough memory, then the heap size is increased and the GC strategy switches to fullsweep again, like a newly spawned process, and all these four scenarios can be occurred agian and again.
+In scenario 3 if the second fullsweep GC cannot collect enough memory, then the heap size is increased and the GC strategy switches to fullsweep again, like a newly spawned process, and all these four scenarios can be occurred again and again.
 
 Now the question is why it matters in an automatic garbage collected language like Erlang.
 Firstly this knowledge can help you to make your system go faster by tuning the GC occurrence and strategy globally or per process. Secondly this is where we can understand one of the main reasons that makes Erlang a soft realtime platform from its garbage collection point of view. This is because each process has its own private heap and its own GC, so each time GC occurs inside a process it just stops the Erlang process which is being collected, but doesn't stop other processes, and this is what a soft realtime system needs.
