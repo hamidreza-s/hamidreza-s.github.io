@@ -57,7 +57,7 @@ Before digging into GC, it is essential to inspect the memory layout of an Erlan
 
 ## GC Details
 
-In order to explain current default Erlang's GC mechanism concisely we can say; it is a *Generational Mark-Sweep* garbage collection that runs inside each Erlang process private heap independently, and also a *Reference Counting* garbage collection occurs for global shared heap.
+In order to explain current default Erlang's GC mechanism concisely we can say; it is a *Generational Copying* garbage collection that runs inside each Erlang process private heap independently, and also a *Reference Counting* garbage collection occurs for global shared heap.
 
 ### Private Heap GC
 
@@ -104,7 +104,7 @@ The GC for shared heap is reference counting. Each object in shared heap (Refc) 
 
 * The other known problem is when there is a sort of long-lived middleware process acting as a request controller or message router for controlling and transferring large Refc binary messages. As this process touches each Refc message, the counter of them increments. So collecting those Refc messages depends on collecting all ProcBin objects even ones that are inside the middleware process. Unfortunately because ProcBins are just a pointer hence they are so cheap and it could take so long to happen a GC inside the middleware process. As a result the Refc messages remain on shared heap even if they have been collected from all other processes, except the middleware.
 
-Shared heap matters because it reduces the IO of passing large messages between processes. Also creating sub-binaries are so fast because they are just pointers to another binary. But as a rule of thumb using shortcuts for being faster has cost, and its cost is well architecting your system in a way that doesn't become trapped in bad conditions. Also there are some well-known architectural patterns for Refc binary leak issues which [Fred Hebert](http://ferd.ca/) explains them in his free ebook; [Erlang in Anger](http://www.erlang-in-anger.com/), and I think that I cannot explain it better than him. So I strongly recommend you to read it.
+Shared heap matters because it reduces the IO of passing large binary messages between processes. Also creating sub-binaries are so fast because they are just pointers to another binary. But as a rule of thumb using shortcuts for being faster has cost, and its cost is well architecting your system in a way that doesn't become trapped in bad conditions. Also there are some well-known architectural patterns for Refc binary leak issues which [Fred Hebert](http://ferd.ca/) explains them in his free ebook; [Erlang in Anger](http://www.erlang-in-anger.com/), and I think that I cannot explain it better than him. So I strongly recommend you to read it.
 
 ## Conclusion
 
