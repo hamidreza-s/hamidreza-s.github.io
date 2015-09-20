@@ -14,46 +14,46 @@ One of the main problems that Erlang tried to solve was creating a platform for 
 Before digging into GC, it is essential to inspect the memory layout of an Erlang process which can be divided into three main parts: Process Control Block, Stack and Heap. It is so similar to Unix process memory layout.
 
 ```
-           Shared Heap                        Erlang Process Memory Layout                  
-                                                                                            
-+----------------------------------+      +----------------------------------+              
-|                                  |      |                                  |              
-|                                  |      |  PID / Status / Registered Name  |       Process
-|                                  |      |                                  |       Control
-|                                  |      |   Initial Call / Current Call    +---->  Block  
-|                                  |      |                                  |       (PCB)  
-|                                  |      |         Mailbox Pointers         |              
-|                                  |      |                                  |              
-|                                  |      +----------------------------------+              
-|                                  |      |                                  |              
-|                                  |      |        Function Parameters       |              
-|                                  |      |                                  |       Process
-|                                  |      |         Return Addresses         +---->  Stack  
-|                                  |      |                                  |              
-|    +--------------+              |      |         Local Variables          |              
-|    |              |              |      |                                  |              
-|    | +------------+--+           |      +-------------------------------+--+              
-|    | |               |           |      |                               |  |              
-|    | | +-------------+--+        |      |  ^                            v  +---->  Free   
-|    | | |                |        |      |  |                               |       Space  
-|    | | | +--------------+-+      |      +--+-------------------------------+              
-|    +-+ | |                |      |      |                                  |              
-|      +-+ |  Refc Binary   |      |      |  Mailbox Messages (Linked List)  |              
-|        +-+                |      |      |                                  |              
-|          +------^---------+      |      |  Compound Terms (List, Tuples)   |       Process
-|                 |                |      |                                  +---->  Private
-|                 |                |      |     Terms Larger than a word     |       Heap   
-|                 |                |      |                                  |              
-|                 +--+ ProcBin +-------------+ Pointers to Large Binaries    |              
-|                                  |      |                                  |              
-+----------------------------------+      +----------------------------------+              
+            Shared Heap                        Erlang Process Memory Layout                  
+                                                                                             
+ +----------------------------------+      +----------------------------------+              
+ |                                  |      |                                  |              
+ |                                  |      |  PID / Status / Registered Name  |       Process
+ |                                  |      |                                  |       Control
+ |                                  |      |   Initial Call / Current Call    +---->  Block  
+ |                                  |      |                                  |       (PCB)  
+ |                                  |      |         Mailbox Pointers         |              
+ |                                  |      |                                  |              
+ |                                  |      +----------------------------------+              
+ |                                  |      |                                  |              
+ |                                  |      |        Function Parameters       |              
+ |                                  |      |                                  |       Process
+ |                                  |      |         Return Addresses         +---->  Stack  
+ |                                  |      |                                  |              
+ |    +--------------+              |      |         Local Variables          |              
+ |    |              |              |      |                                  |              
+ |    | +------------+--+           |      +-------------------------------+--+              
+ |    | |               |           |      |                               |  |              
+ |    | | +-------------+--+        |      |  ^                            v  +---->  Free   
+ |    | | |                |        |      |  |                               |       Space  
+ |    | | | +--------------+-+      |      +--+-------------------------------+              
+ |    +-+ | |                |      |      |                                  |              
+ |      +-+ |  Refc Binary   |      |      |  Mailbox Messages (Linked List)  |              
+ |        +-+                |      |      |                                  |              
+ |          +------^---------+      |      |  Compound Terms (List, Tuples)   |       Process
+ |                 |                |      |                                  +---->  Private
+ |                 |                |      |     Terms Larger than a word     |       Heap   
+ |                 |                |      |                                  |              
+ |                 +--+ ProcBin +-------------+ Pointers to Large Binaries    |              
+ |                                  |      |                                  |              
+ +----------------------------------+      +----------------------------------+              
 ```
 
 * **PCB**: Process Control Block holds some information about the process such as its identifier (PID) in Process Table, current status (running, waiting), its registered name, the initial and current call, and also PCB holds some pointers to incoming messages which are members of a *Linked List* that is stored in heap.
 
 * **Stack**: It is a downward growing memory area which holds incoming and outgoing parameters, return addresses, local variables and temporary spaces for evaluating expressions.
 
-* **Heap**: It is an upward growing memory area which holds physical messages of process mailbox, compound terms like [Lists](http://www.erlang.org/doc/man/lists.html), [Tuples](http://www.erlang.org/documentation/doc-5.8/doc/reference_manual/data_types.html) and [Binaries](http://www.erlang.org/doc/man/binary.html) and objects which are larger than a machine word such as floating point numbers. Binary terms which are larger than 64 machine words are not stored in process private heap. They are called *Refc Binary* (Reference Counted Binary) and are stored in a large *Shared Heap* which is accessible by all processes who have the pointer of that Refc Binaries. That pointer is called *ProcBin* and is stored in process private heap.
+* **Heap**: It is an upward growing memory area which holds physical messages of process mailbox, compound terms like [Lists](http://www.erlang.org/doc/man/lists.html), [Tuples](http://www.erlang.org/documentation/doc-5.8/doc/reference_manual/data_types.html) and [Binaries](http://www.erlang.org/doc/man/binary.html) and objects which are larger than a machine word such as floating point numbers. Binary terms which are larger than 64 bytes are not stored in process private heap. They are called *Refc Binary* (Reference Counted Binary) and are stored in a large *Shared Heap* which is accessible by all processes who have the pointer of that Refc Binaries. That pointer is called *ProcBin* and is stored in process private heap.
 
 ## GC Details
 
