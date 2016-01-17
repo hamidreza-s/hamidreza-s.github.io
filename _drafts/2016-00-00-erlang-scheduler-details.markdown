@@ -17,16 +17,31 @@ Generally speaking, Scheduling is a mechanism that assigns works to workers. The
 
 Now the question is what scheduling mechanism is suitable for Realtime systems which must response within a specified time. Cooperative Scheduling system cannot satisfy a Realtime system because a running task in such system might never return control back or returns late after a deadline. So Realtime systems commonly use Preemptive Scheduling.
 
-{ erlang scheduler history }
+## Erlang Scheduling
 
-{ current erlang scheduler with diagram and controlling api }
+Erlang as a Realtime platform for multitasking uses Preemtive Scheduling. The responsiblity of an Erlang Scheduler is selecting a [Process](--link--) and executing their code. It also do Garbage Collection and Memory Management. The factor of selecting a process for execution is based on their priority level which is configurable per process. In the other hand the factor of preemting a process from execution is based on a certain number of *reductions* since the last time it was selected for execution, regardless of its priority level. The reduction is a counter per process that is normally incremented by one for each function call. It is used for preempting processes and context switching them when the counter of a process reaches the maximum number of reductions. For example in Erlang/OTP R12B this maximum number was 2000 reductions.
+
+### History
+
+The scheduling of tasks in Erlang has a long history. It has been changing over the time.
+
+{ ... }
+
+### Current Status
+
+{ ... }
+
+### Migration Mechanism
+
+{ ... }
+
+### Controlling API
+
+{ ... }
 
 { what is cpu affinity }
-
 { how to benefit from cpu affinity }
-
 { cpu affinity cautions }
-
 { conclusion }
 
 ## Resources
@@ -35,6 +50,8 @@ Now the question is what scheduling mechanism is suitable for Realtime systems w
  * http://www.erlang.org/doc/man/erl.html
  * https://vimeo.com/113483904
  * http://jlouisramblings.blogspot.co.uk/2013/01/how-erlang-does-scheduling.html
+ * http://www.erlang.org/euc/08/euc_smp.pdf
  * http://developer.vz.net/2009/07/30/about-erlangotp-and-multi-core-performance-in-particular-kenneth-lundin/
  * http://www.erlang-factory.com/upload/presentations/708/HitchhikersTouroftheBEAM.pdf
  * http://erlang.2086793.n4.nabble.com/Some-facts-about-Erlang-and-SMP-td2108770.html
+ * http://erlang.org/pipermail/erlang-questions/2001-April/003132.html
