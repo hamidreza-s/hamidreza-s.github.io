@@ -5,7 +5,7 @@ date: 2016-00-00
 categories: erlang scheduling cpu affinity realtime preemptive
 ---
 
-There are some internal features that let Erlang to be a Soft Realtime platform. One of them is its Garbage Collection mechanism which I talked about it in my previous article, [Erlang Garbage Collection Details and Why It Matters](--link--). The other one is its Scheduling mechanism that is well worth looking at. In this article I will explain its history, the current status, controlling API and how it can benefit from [CPU Affinity](--link--) to improve the performance.
+There are some underlying features that make Erlang a Soft Realtime platform. One of them is its Garbage Collection mechanism which I talked about it in my previous article, [Erlang Garbage Collection Details and Why It Matters](--link--). The other one is its Scheduling mechanism that is well worth looking at. In this article I will explain its history, the current status, controlling and monitoring API and how it can benefit from [CPU Affinity](--link--) to improve the performance.
 
 ## What is Scheduling
 
@@ -19,7 +19,7 @@ Now the question is what scheduling mechanism is suitable for Realtime systems w
 
 ## Erlang Scheduling
 
-Erlang as a Realtime platform for multitasking uses Preemtive Scheduling. The responsiblity of an Erlang Scheduler is selecting a [Process](--link--) and executing their code. It also do Garbage Collection and Memory Management. The factor of selecting a process for execution is based on their priority level which is configurable per process. In the other hand the factor of preemting a process from execution is based on a certain number of **Reductions** since the last time it was selected for execution, regardless of its priority level. The reduction is a counter per process that is normally incremented by one for each function call. It is used for preempting processes and context switching them when the counter of a process reaches the maximum number of reductions. For example in Erlang/OTP R12B this maximum number was 2000 reductions.
+Erlang as a Realtime platform for multitasking uses Preemtive Scheduling. The responsiblity of an Erlang Scheduler is selecting a [Process](--link--) and executing their code. It also do Garbage Collection and Memory Management. The factor of selecting a process for execution is based on their priority level which is configurable per process and in each priority level processes are scheduled in a round robin fashoin. In the other hand the factor of preemting a process from execution is based on a certain number of **Reductions** since the last time it was selected for execution, regardless of its priority level. The reduction is a counter per process that is normally incremented by one for each function call. It is used for preempting processes and context switching them when the counter of a process reaches the maximum number of reductions. For example in Erlang/OTP R12B this maximum number was 2000 reductions.
 
 The scheduling of tasks in Erlang has a long history. It has been changing over the time. These changes were affected by the changes in SMP (Symmetric Multi-Processing) feature of Erlang.
 
@@ -95,7 +95,7 @@ Some known bottlenecks in this version was as follows:
 
 However seperating run queues per scheduler was picked to solve these bottleneck issues in next versions.
 
-#### Scheduling After R13B
+### Scheduling After R13B
 
 In this version each scheduler has its own run queue. It decreases the number of lock confilicts in systems with many schedulers on many cores and also improves the overal performace.
 
@@ -133,12 +133,71 @@ This way the locking confilicts when accessing the run queue is solved but intro
 * Based on what order a scheduler can steal tasks from an overloaded scheduler?
 * What if we started many schedulers but there all so few tasks to do?
 
-These concerns lead the Erlang team to introduce a concept for making scheduling fair and efficient, the **Migration Login**. It tries to control and balance run queues based on the statistics that collects from the system.
+These concerns lead the Erlang team to introduce a concept for making scheduling fair and efficient, the **Migration Login**. It tries to control and balance run queues based on the statistics that collects from the system. 
 
-{ controlling api }
+However we should not depend on the scheduling to remain exactly as it is today, because it is likely to be changed in future releases in order to better.
+
+## Controlling and Monitoring API
+
+There are Erlang emulator flags as well as internal controlling and monitoring functions for the scheduling behaviours. 
+
+### Scheduler Threads
+
+The number of maximum available scheduler threads and online scheduler threads can be specified by passing a number to `+S` flag to Erlang emulator starting script which is `erl`. 
+
+```shell
+$ erl +S MaxAvailableSchedulers:OnlineSchedulers
+```
+
+The number of maximum available scheduler threads just can be specified at boot time and is fixed during the run time, but the number of online scheduler threads can be specified and changed in boot time as well as run time. For example we can start an emulator with 16 schedulers from which 8 schedulers are online.
+
+```shell
+$ erl +S 16:8
+```
+Then inside shell the online scheduler threads can be changed as follows.
+
+```erlang
+> erlang:system_info(schedulers). %% => returns 16
+> erlang:system_info(schedulers_online). %% => returns 8
+> erlang:system_flag(schedulers_online, 16). %% => returns 8
+> erlang:system_info(schedulers_online). %% => returns 16
+```
+
+Also with `+SP` flag you can set them by percentages.
+
+### Process Priority
+
+As I said before schedulers select a process for execution based on their priority level. It can be specified inside a process by calling `erlang:process_flag/2` function.
+
+```erlang
+PID = spawn(fun() ->
+   process_flag(priority, high),
+   %% ...
+   end).
+```
+
+The priority can be any of `low | normal | high | max` atom. However the `max` priority level is reserved for internal use in Erlang runtime and should not be used by others.
+
+### Statistics
+
+Say somthing ... .
+
+```erlang
+erlang:statistics(reductions)
+erlang:statistics(run_queue)
+erlang:statistics(runtime)
+erlang:statistics(scheduler_wall_time)
+erlang:statistics(wall_clock)
+```
+
+## CPU Affinity
+
 { what is cpu affinity }
+
 { how to benefit from cpu affinity }
+
 { cpu affinity cautions }
+
 { conclusion }
 
 ## Resources
