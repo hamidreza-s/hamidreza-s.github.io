@@ -1,11 +1,11 @@
 ---
 layout: port
-title: "Erlang Scheduler Details and How It Can Benefit from CPU Affinity"
-date: 2016-00-00
-categories: erlang scheduling cpu affinity realtime preemptive
+title: "Erlang Scheduler Details and Why It Matters"
+date: 2016-02-09
+categories: erlang scheduling realtime preemptive migration
 ---
 
-There are some underlying features that make Erlang a Soft Realtime platform. One of them is its Garbage Collection mechanism which I talked about it in my previous article, [Erlang Garbage Collection Details and Why It Matters](--link--). The other one is its Scheduling mechanism that is well worth looking at. In this article I will explain its history, the current status, controlling and monitoring API and how it can benefit from [CPU Affinity](--link--) to improve the performance.
+There are some underlying features that make Erlang a Soft Realtime platform. One of them is its Garbage Collection mechanism which I talked about it in my previous article, [Erlang Garbage Collection Details and Why It Matters](--link--). The other one is its Scheduling mechanism that is well worth looking at. In this article I will explain its history, the current status, controlling and monitoring API and examples.
 
 ## What is Scheduling
 
@@ -143,7 +143,7 @@ There are Erlang emulator flags as well as internal controlling and monitoring f
 
 ### Scheduler Threads
 
-The number of maximum available scheduler threads and online scheduler threads can be specified by passing a number to `+S` flag to Erlang emulator starting script which is `erl`. 
+The number of maximum available scheduler threads and online scheduler threads can be specified by passing two numbers to `+S` flag to Erlang emulator starting script which is `erl`. 
 
 ```shell
 $ erl +S MaxAvailableSchedulers:OnlineSchedulers
@@ -163,7 +163,7 @@ Then inside shell the online scheduler threads can be changed as follows.
 > erlang:system_info(schedulers_online). %% => returns 16
 ```
 
-Also with `+SP` flag you can set them by percentages.
+Also with `+SP` flag it can be set them by percentages.
 
 ### Process Priority
 
@@ -176,29 +176,38 @@ PID = spawn(fun() ->
    end).
 ```
 
-The priority can be any of `low | normal | high | max` atom. However the `max` priority level is reserved for internal use in Erlang runtime and should not be used by others.
+The priority can be any of `low | normal | high | max` atom. The default priority level is `normal` and the `max` is reserved for internal use in Erlang runtime and should not be used by others.
 
-### Statistics
+### Run Queue Statistics
 
-Say somthing ... .
+As I explained before run queues hold the processes which are ready for execution before picking them by schedulers. It is possible to get the count of all processes which are ready for execution on all available run queues by `erlang:statistics(run_queue)` function. As a real example let's boot Erlang emulator with 4 online schedulers and assign them 10 heavy CPU-bound processes councurrently. This process could be [calculating prime numbers](https://gist.github.com/hamidreza-s/9e3ed289f65759048875) up to a big number.
 
 ```erlang
-erlang:statistics(reductions)
-erlang:statistics(run_queue)
-erlang:statistics(runtime)
-erlang:statistics(scheduler_wall_time)
-erlang:statistics(wall_clock)
+%% Everything is clean and ready
+> erlang:statistics(online_schedulers). %% => 4
+> erlang:statistics(run_queue). %% => 0
+
+%% Spawn 10 heavy number crunching processes concurrently
+> [spawn(fun() -> calc:prime_numbers(10000000) end) || _ <- lists:seq(1, 10)].
+
+%% Run queues have remaining tasks to do
+> erlang:statistics(run_queue). %% => 8
+
+%% Erlang is still responsive, great!
+> calc:prime_numbers(10). %% => [2, 3, 5, 7]
+
+%% Wait a moment
+> erlang:statistics(run_queue). %% => 4
+
+%% Wait a moment
+> erlang:statistics(run_queue). %% => 0
 ```
 
-## CPU Affinity
+Because the number of concurrent processes are more than online schedulers, it takes time for schedulers to execute all the processes in run queus and make them empty. The interesting thing here is that after spawning those heavy processes, the Erlang emulator is still responsive because of its preemptive scheduling. It doesn't let those heavy and wild processes to chew all the runtime out without leting other light but likely important processes to get their result, and it is a great feature when it comes to implementing a realtime system.
 
-{ what is cpu affinity }
+## Conclusion
 
-{ how to benefit from cpu affinity }
-
-{ cpu affinity cautions }
-
-{ conclusion }
+Say something ... .
 
 ## Resources
 
