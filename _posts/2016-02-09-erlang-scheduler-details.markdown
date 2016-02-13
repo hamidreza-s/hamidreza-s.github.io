@@ -1,5 +1,6 @@
 ---
 layout: post
+disqus: true
 title: "Erlang Scheduler Details and Why It Matters"
 date: 2016-02-09
 categories: erlang scheduling real-time preemptive migration
