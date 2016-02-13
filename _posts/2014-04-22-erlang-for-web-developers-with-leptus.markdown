@@ -1,5 +1,6 @@
 ---
 layout: post
+disqus: true
 title: "Erlang for Web Developers with Leptus"
 date:  2014-04-22 10:27:00
 categories: erlang web micro-framework leptus tutorial

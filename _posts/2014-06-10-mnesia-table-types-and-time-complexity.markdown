@@ -1,5 +1,6 @@
 ---
 layout: post
+disqus: true
 title: "Mnesia Table Types and Time Complexity"
 date: 2014-06-10 17:16:00
 categories: erlang mnesia table-type time-complexity

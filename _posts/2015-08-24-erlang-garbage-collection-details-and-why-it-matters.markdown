@@ -1,5 +1,6 @@
 ---
 layout: post
+disqus: true
 title: "Erlang Garbage Collection Details and Why It Matters"
 date: 2015-08-24 20:15:00
 category: erlang garbage collection memory layout soft realtime

@@ -1,5 +1,6 @@
 ---
 layout: post
+disqus: true
 title: "Writing RESTful Web Services with Webmachine"
 date: 2014-11-26 17:30:00
 categories: erlang restful webservice webmachine

@@ -1,5 +1,6 @@
 ---
 layout: post
+disqus: true
 title: "Erlang meets Java - An Interface-centric Review"
 date: 2015-05-10 17:30:00
 categories: IDL erlang distributed protocol java jinterface performance benchmark database
