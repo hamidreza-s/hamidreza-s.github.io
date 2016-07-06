@@ -6,7 +6,7 @@ date: 2015-08-24 20:15:00
 category: erlang garbage collection memory layout soft realtime
 ---
 
-One of the main problems that Erlang tried to solve was creating a platform for implementing [Soft Realtime](https://en.wikipedia.org/wiki/Real-time_computing) systems with a high level of responsiveness. Such systems require a fast [Garbage Collection](https://en.wikipedia.org/wiki/Garbage_collection_%28computer_science%29) mechanism that doesn't stop the system from responding in a timely manner. In other hand Garbage Collection gets more importance when we consider Erlang as an [Immutable](https://en.wikipedia.org/wiki/Immutable_object) language with *Non-destructive Update* property, because there is a high rate of producing garbage in such languages.
+One of the main problems that Erlang tried to solve was creating a platform for implementing [Soft Realtime](https://en.wikipedia.org/wiki/Real-time_computing) systems with a high level of responsiveness. Such systems require a fast [Garbage Collection](https://en.wikipedia.org/wiki/Garbage_collection_%28computer_science%29) mechanism that doesn't stop the system from responding in a timely manner. On other hand Garbage Collection gets more importance when we consider Erlang as an [Immutable](https://en.wikipedia.org/wiki/Immutable_object) language with *Non-destructive Update* property, because there is a high rate of producing garbage in such languages.
 
 
 
@@ -117,3 +117,7 @@ Even if we are using a language that manages memory itself like Erlang, nothing 
 * [Implementation of FPL & Concurrency](http://lampwww.epfl.ch/resources/lamp/teaching/advancedCompiler/2004/slides/ImplementationOfConcurrency_slides.pdf)
 * [Efficient Memory Management for Message-Passing Concurrency Paper](http://user.it.uu.se/~jesperw/publications/Wilhelmsson_lic.pdf)
 * [Programming the Parallel World by Erlang Paper](http://labouseur.com/courses/erlang/programming-parallel-with-erlang.pdf)
+
+## External Links
+
+* [Hacker News thread of this article](https://news.ycombinator.com/item?id=10218343)

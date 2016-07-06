@@ -20,7 +20,7 @@ Now the question is what scheduling mechanism is suitable for real-time systems 
 
 ## Erlang Scheduling
 
-Erlang as a real-time platform for multitasking uses Preemptive Scheduling. The responsibility of an Erlang scheduler is selecting a [Process](http://erlang.org/doc/reference_manual/processes.html) and executing their code. It also does Garbage Collection and Memory Management. The factor of selecting a process for execution is based on their priority level which is configurable per process and in each priority level processes are scheduled in a round robin fashion. In the other hand the factor of preempting a process from execution is based on a certain number of **Reductions** since the last time it was selected for execution, regardless of its priority level. The reduction is a counter per process that is normally incremented by one for each function call. It is used for preempting processes and context switching them when the counter of a process reaches the maximum number of reductions. For example in Erlang/OTP R12B this maximum number was 2000 reductions.
+Erlang as a real-time platform for multitasking uses Preemptive Scheduling. The responsibility of an Erlang scheduler is selecting a [Process](http://erlang.org/doc/reference_manual/processes.html) and executing their code. It also does Garbage Collection and Memory Management. The factor of selecting a process for execution is based on their priority level which is configurable per process and in each priority level processes are scheduled in a round robin fashion. On the other hand the factor of preempting a process from execution is based on a certain number of **Reductions** since the last time it was selected for execution, regardless of its priority level. The reduction is a counter per process that is normally incremented by one for each function call. It is used for preempting processes and context switching them when the counter of a process reaches the maximum number of reductions. For example in Erlang/OTP R12B this maximum number was 2000 reductions.
 
 The scheduling of tasks in Erlang has a long history. It has been changing over the time. These changes were affected by the changes in SMP (Symmetric Multi-Processing) feature of Erlang.
 
@@ -209,7 +209,7 @@ Because the number of concurrent processes are more than online schedulers, it t
 
 ## Conclusion
 
-Although implementing a preemptive scheduling system could be complex but in case of Erlang it is not the responsibility of developer because the feature is inside the virtual machine. In the other hand the extra processing cost of tracking, balancing, selecting, executing, migrating and preempting processes is totally affordable when the system needs to scale on all processing resources with a high level of fairness and also responds timely in a real-time system. By the way it is worth mentioning that fully preemptive scheduling is a feature that nearly all operating systems support, but in case of high level platforms, languages or libraries it can be claimed that Erlang virtual machine is almost unique because JVM threads depend on operating system schedulers, [CAF](http://actor-framework.org/) which is a C++ actor library uses cooperative scheduling, Golang is not fully preemptive and it also applies to Python's Twisted, Ruby's Event Machine and Nodejs. It doesn't mean that it is the best option for every possible challenge, it means that if we need to implement a real-time system with low latency Erlang can be a good option.
+Although implementing a preemptive scheduling system could be complex but in case of Erlang it is not the responsibility of developer because the feature is inside the virtual machine. On the other hand the extra processing cost of tracking, balancing, selecting, executing, migrating and preempting processes is totally affordable when the system needs to scale on all processing resources with a high level of fairness and also responds timely in a real-time system. By the way it is worth mentioning that fully preemptive scheduling is a feature that nearly all operating systems support, but in case of high level platforms, languages or libraries it can be claimed that Erlang virtual machine is almost unique because JVM threads depend on operating system schedulers, [CAF](http://actor-framework.org/) which is a C++ actor library uses cooperative scheduling, Golang is not fully preemptive and it also applies to Python's Twisted, Ruby's Event Machine and Nodejs. It doesn't mean that it is the best option for every possible challenge, it means that if we need to implement a real-time system with low latency Erlang can be a good option.
 
 ## Resources
 
@@ -218,3 +218,8 @@ Although implementing a preemptive scheduling system could be complex but in cas
 * [How Erlang Does Scheduling](http://jlouisramblings.blogspot.co.uk/2013/01/how-erlang-does-scheduling.html)
 * [Inside the Erlang VM](http://www.erlang.org/euc/08/euc_smp.pdf)
 * [Erlang Scheduler: What Does It Do](http://erlang.org/pipermail/erlang-questions/2001-April/003132.html)
+
+## External Links
+
+* [Hacker News thread of this article](https://news.ycombinator.com/item?id=11064763)
+* [Chinese translation of this article by Senjougahara Yuki](http://blog.csdn.net/qq_31369609/article/details/51834576)
