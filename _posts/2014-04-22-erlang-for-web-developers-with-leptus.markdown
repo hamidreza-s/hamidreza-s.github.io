@@ -474,7 +474,7 @@ Now we can start the application.
 For starting your application, first you need to compile it by Rebar as follows:
 
 ```bash
-$ ./rabar compile
+$ ./rebar compile
 ```
 
 Then open the Erlang shell with required paths and start the application with `application:start(todo)` function call as follows:
