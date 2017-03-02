@@ -1,11 +1,12 @@
 ---
 layout: post
+disqus: true
 title: "Erlang for Web Developers with Leptus"
 date:  2014-04-22 10:27:00
 categories: erlang web micro-framework leptus tutorial
 ---
 
-In this article, I will try to introduce [Erlang Programming Language](https://en.wikipedia.org/wiki/Erlang_(programming_language\)) not only as a robust networking platform, but also as a handy tool for web developers in their everyday usage. As a practical example for it, I am going to use [Leptus](https://github.com/s1n4/leptus), which is a RESTful Micro-Framework runs on top of [Cowboy](https://github.com/extend/cowboy).
+In this article, I will try to introduce [Erlang Programming Language](https://en.wikipedia.org/wiki/Erlang_(programming_language)) not only as a robust networking platform, but also as a handy tool for web developers in their everyday usage. As a practical example for it, I am going to use [Leptus](https://github.com/s1n4/leptus), which is a RESTful Micro-Framework runs on top of [Cowboy](https://github.com/extend/cowboy).
 
 ## What is Erlang
 
@@ -479,7 +480,7 @@ $ ./rabar compile
 Then open the Erlang shell with required paths and start the application with `application:start(todo)` function call as follows:
 
 ```bash
-$ erl -pa ebin ebin/*/deps
+$ erl -pa ebin deps/*/ebin
 
 Erlang R16B03 (erts-5.10.4) [...]
 Eshell V5.10.4  (abort with ^G)

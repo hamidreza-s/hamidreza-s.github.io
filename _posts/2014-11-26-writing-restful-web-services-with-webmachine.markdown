@@ -1,11 +1,12 @@
 ---
 layout: post
+disqus: true
 title: "Writing RESTful Web Services with Webmachine"
-date: 2014-09-11 12:30:00
+date: 2014-11-26 17:30:00
 categories: erlang restful webservice webmachine
 ---
 
-Today I want to talk about [RESTful](https://en.wikipedia.org/wiki/Representational_state_transfer) Web Services and how to create one with [Webmachie](https://github.com/basho/webmachine), which is a REST toolkit, written in [Erlang](https://en.wikipedia.org/wiki/Erlang_(programming_language)) programming language. The reason that propeled to write this post was the set of unique approaches that I've found in the Webmachine both syntactically and semantically. To be succinct, let's get our hands dirty with it. 
+Today I want to talk about [RESTful](https://en.wikipedia.org/wiki/Representational_state_transfer) Web Services and how to create one with [Webmachie](https://github.com/basho/webmachine), which is a REST toolkit, written in [Erlang](https://en.wikipedia.org/wiki/Erlang_(programming_language)) programming language. The reason that propelled me to write this post was the set of unique approaches that I've found in the Webmachine both syntactically and semantically. To be succinct, let's get our hands dirty with it.
 
 ## What is REST
 What is all the fuss about the REST? It is an acronym of REpresentational State Transfer and can be defined as an architectural style that can be applied to all the entities on the web including __components__, __connectors__ and __data elements__. Simply put, a component can be a web client with a graphical interface for providing data elements from a remote component which can be a web application. These components communicate through their connectors. Therefore the connector can monitor, facilitate, balance the load or make other controlling actions.
@@ -54,7 +55,7 @@ $ telnet example.com 80
 < HTTP/1.1 200 OK
 < Vary: Accept
 < Server: MochiWeb/1.1 WebMachine/1.10
-< Content-type: application/json 
+< Content-type: application/json
 ```
 
 Now let's create a web service to serve such a response. Use [this](https://github.com/basho/webmachine/wiki/Quickstart) quickstart for creating the base Webmachine skeleton.
@@ -75,7 +76,7 @@ We've just add a dispatch route and a dispatcher module with the name of weather
 	to_json/2,
 	to_yaml/2,
 	to_html/2]).
-	
+
 %%%%%%%%%%%%%%%%%%%%%%%%
 %%% public functions %%%
 %%%%%%%%%%%%%%%%%%%%%%%%
@@ -102,7 +103,7 @@ content_types_provided(Request, State) ->
 		{"text/yaml", to_yaml}
 	],
 	{ContetTypes, Request, State}.
-	
+
 to_json(Request, State) ->
 	%% get list and format it to JSON
 	{ok, List} = get_weather_by_country(),
@@ -123,7 +124,7 @@ get_weather_by_country() ->
 	%% fetch raw data from database
 	Result = my_data:weather_by_country(),
 	{ok, Result}.
-	
+
 get_etag() ->
 	%% get entity tag of data
 	Etag = my_data:weather_by_country_etag(),
@@ -135,7 +136,7 @@ I used this simple module to show you how it works in the simplest form. However
 
 ### Webmachine is functional
 As you've just seen, Webmachine is written in Erlang, a functional programming language. Now the question; what benefit does it have for us?
-One of the key principles of functionl programming languages is [Referential Transparency](https://en.wikipedia.org/wiki/Referential_transparency_(computer_science\)) for its functions. It says that every referential transparent function returns the same result for a same input at any point in time. So there is no [Global Variables](https://en.wikipedia.org/wiki/Global_variable) or [Mutator Methods](https://en.wikipedia.org/wiki/Mutator_method) that can change the output of a same input in subsequent function calls, so testing and debugging it becomes simpler. 
+One of the key principles of functionl programming languages is [Referential Transparency](https://en.wikipedia.org/wiki/Referential_transparency_(computer_science)) for its functions. It says that every referential transparent function returns the same result for a same input at any point in time. So there is no [Global Variables](https://en.wikipedia.org/wiki/Global_variable) or [Mutator Methods](https://en.wikipedia.org/wiki/Mutator_method) that can change the output of a same input in subsequent function calls, so testing and debugging it becomes simpler.
 
 Let's list some main benefits of it:
 

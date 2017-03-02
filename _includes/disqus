@@ -3,6 +3,12 @@
         /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
         var disqus_shortname = 'hamidrezas-github-blog'; // required: replace example with your forum shortname
 
+        /*
+        var disqus_config = function () {
+            this.page.identifier = 'http://' + window.location.hostname + window.location.pathname;
+        };
+        */
+
         /* * * DON'T EDIT BELOW THIS LINE * * */
         (function() {
             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

@@ -1,5 +1,6 @@
 ---
 layout: post
+disqus: true
 title:  "Obligatory Hello World"
 date:   2013-12-16 17:46:33
 categories: fun javascript jekyll hello-world

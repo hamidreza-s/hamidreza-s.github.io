@@ -8,7 +8,7 @@ archive: false
 
     <article class="post">
         <header class="post-header">
-            <a id="blog-logo" href="{{site.baseurl}}">
+            <a id="blog-logo" href="/">
                 {% if site.logo %}
                     <img src="{{site.logo}}" alt="{{ site.name }}" />
                 {% else %}
@@ -48,13 +48,14 @@ archive: false
         	<!-- If we want to display author's name and bio -->
             {% if site.author %}
                 <section class="author">
-                	<header> <a href="{{ site.baseurl }}"> <img class="profile" src="/assets/images/hamidreza_soleimani_avatar.jpg" alt="Author's profile picture"></a></header>
+                	<header> <a href="/about.html"> <img class="profile" src="/assets/images/hamidreza_soleimani_avatar.jpg" alt="Author's profile picture"></a></header>
                 	<article>
                 		<!-- Author Name -->
                     	<h4> {{ site.author }} </h4>
                     	<!-- Author Bio -->
                     	<p> 
-                    		{{ site.author_description }}
+                    		{{ site.author_description }}<br/>
+                        <a href="https://github.com/hamidreza-s">Github</a> - <a href="https://twitter.com/hamidreza_181">Twitter</a> - <a href="http://stackoverflow.com/users/1927951/hamidreza-soleimani">Stackoverflow</a> - <a href="http://www.slideshare.net/hamidreza-s/presentations">Slideshare</a>
                     	</p>
                     </article>
                 </section>                
